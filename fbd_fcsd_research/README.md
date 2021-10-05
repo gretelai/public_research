@@ -6,7 +6,7 @@ In order to run this code, make sure to install the requirements in `requirement
 
 It is advised to first make a virtual environment before installing these requirements.
 
-# Original FBD experiment code.
+# Original FBD experiment code
 
 If you would like to replicate experiments for the original FBD metric, please go to the following repository:
 

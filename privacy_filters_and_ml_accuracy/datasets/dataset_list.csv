@@ -1,0 +1,10 @@
+filename
+s3://gretel-public-website/datasets/ML_Accuracy_Blog_Datasets/Adventure_Works_Bike_Buying
+s3://gretel-public-website/datasets/ML_Accuracy_Blog_Datasets/Bank_Marketing_Dataset
+s3://gretel-public-website/datasets/ML_Accuracy_Blog_Datasets/Data_Scientists_Job_Candidates
+s3://gretel-public-website/datasets/ML_Accuracy_Blog_Datasets/IBM_HR_Attrition
+s3://gretel-public-website/datasets/ML_Accuracy_Blog_Datasets/Stroke_Prediction
+s3://gretel-public-website/datasets/ML_Accuracy_Blog_Datasets/Telco_Customer_Churn
+s3://gretel-public-website/datasets/ML_Accuracy_Blog_Datasets/UCI_Adult_Census_Income
+s3://gretel-public-website/datasets/ML_Accuracy_Blog_Datasets/UCI_Credit_Card_Default
+s3://gretel-public-website/datasets/ML_Accuracy_Blog_Datasets/dataset_list.csv

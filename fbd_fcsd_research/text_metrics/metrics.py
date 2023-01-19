@@ -164,7 +164,7 @@ def calc_FCSD(real_score_mean: float,
     return ((real_score_mean - synth_score_mean)**2 + 
             real_score_var + 
             synth_score_var - 
-            2 * math.sqrt(real_score_var * synth_score_var))
+            2 * math.sqrt(real_score_var * synth_score_var))[0]
 
 def metrics_run(real_text: pd.Series, 
                 synth_text: pd.Series, 

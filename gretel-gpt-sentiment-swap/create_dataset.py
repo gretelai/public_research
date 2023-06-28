@@ -116,7 +116,7 @@ def create_training_review_pairs(df_groupby: pd.core.groupby.DataFrameGroupBy, r
 
 def create_conditional_prompt_test_set(
     df: pd.DataFrame,
-    df_groupby: pd.core.groupby.DataFrameGroupBy,
+    group_names: list[str],
     rng: np.random.mtrand.RandomState,
     num_samples: int = 100,
 ) -> pd.DataFrame:
@@ -127,7 +127,7 @@ def create_conditional_prompt_test_set(
 
     Args:
         df: Product review dataset with product ids, reviews, and star ratings.
-        df_groupby: The grouped records that were passed to create_training_review_pairs.
+        group_names: List of all the product id groups.
         rng: RandomState object for random number generation.
         num_samples: Number of conditional prompts. Defaults to 100.
 
@@ -135,18 +135,15 @@ def create_conditional_prompt_test_set(
         DataFrame where each row is a conditional prompt.
     """
     print(f"Creating {num_samples} conditional prompts")
-    group_names = list(df_groupby.groups.keys())
-    not_in_group_mask = ~df["product_id"].isin(group_names)
-    df["star_rating"].isin(POSSIBLE_STAR_RATINGS)
 
-    # for each star rating, select reviews that were not in the training group
+    # for each star rating, we select reviews that were not in the training group
+    df["star_rating"].isin(POSSIBLE_STAR_RATINGS)
+    not_in_group_mask = ~df["product_id"].isin(group_names)
+
     samples = []
     for star_rating in POSSIBLE_STAR_RATINGS:
-        samples.append(
-            df[not_in_group_mask & (df["star_rating"] == star_rating)].sample(
-                num_samples // 2, replace=False, random_state=rng
-            )
-        )
+        star_mask = df["star_rating"] == star_rating
+        samples.append(df[not_in_group_mask & star_mask].sample(num_samples // 2, replace=False, random_state=rng))
     samples = pd.concat(samples)
 
     conditional_prompt_list = []
@@ -166,7 +163,7 @@ def create_conditional_prompt_test_set(
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--data-subset", type=str, default="Apparel_v1_00")
-    parser.add_argument("--max-training-samples", type=int, default=30000)
+    parser.add_argument("--max-training-samples", type=int, default=50000)
     parser.add_argument("--min-words", type=int, default=10)
     parser.add_argument("--max-words", type=int, default=50)
     parser.add_argument("--seed", type=int, default=42)
@@ -184,7 +181,12 @@ if __name__ == "__main__":
 
     print(f"Writing file with {args.max_training_samples} training samples")
     df_training = df_training.sample(min(len(df_training), args.max_training_samples), replace=False, random_state=rng)
-    df_training.to_csv(args.output_path / f"training_product_review_pairs_{args.data_subset}.csv", index=False)
+    df_training.to_csv(
+        args.output_path / f"training_product_review_pairs_{args.data_subset}.csv.gz", index=False, compression="gzip"
+    )
 
-    df_conditional = create_conditional_prompt_test_set(df_select, df_groupby, rng, args.num_conditional_samples)
-    df_conditional.to_csv(args.output_path / f"conditional_prompts_{args.data_subset}.csv", index=False)
+    group_names = list(df_groupby.groups.keys())
+    df_conditional = create_conditional_prompt_test_set(df_select, group_names, rng, args.num_conditional_samples)
+    df_conditional.to_csv(
+        args.output_path / f"conditional_prompts_{args.data_subset}.csv.gz", index=False, compression="gzip"
+    )

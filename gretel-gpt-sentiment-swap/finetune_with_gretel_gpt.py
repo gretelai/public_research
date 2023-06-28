@@ -29,17 +29,18 @@ config = {
                 "data_source": "__",
                 "pretrained_model": "gretelai/mpt-7b",
                 "batch_size": 4,
-                "epochs": 3,
-                "weight_decay": 0.02,
+                "epochs": 4,
+                "weight_decay": 0.01,
                 "warmup_steps": 100,
                 "lr_scheduler": "linear",
-                "learning_rate": 0.001,
+                "learning_rate": 0.0002,
                 "validation": None,
+                "generate": {"num_records": 100, "maximum_text_length": 500},
             }
         }
     ],
 }
 model = project.create_model_obj(model_config=config)
-model.data_source = pd.read_csv(f"data/training_product_review_pairs_{args.data_subset}.csv")
+model.data_source = pd.read_csv(f"data/training_product_review_pairs_{args.data_subset}.csv.gz")
 model.name = f"{PROJECT_NAME}_{args.data_subset}"
 model.submit_cloud()

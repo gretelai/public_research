@@ -1,3 +1,4 @@
+import time
 from argparse import ArgumentParser
 from pathlib import Path
 
@@ -162,16 +163,18 @@ def create_conditional_prompt_test_set(
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("--data-subset", type=str, default="Apparel_v1_00")
-    parser.add_argument("--max-training-samples", type=int, default=50000)
-    parser.add_argument("--min-words", type=int, default=10)
-    parser.add_argument("--max-words", type=int, default=50)
-    parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--num-conditional-samples", type=int, default=100)
-    parser.add_argument("--output-path", type=Path, default=PROJECT_PATH / "data")
+    parser.add_argument("--data-subset", type=str, default="Video_Games_v1_00", help="Subset of Amazon dataset to use.")
+    parser.add_argument("--max-training-samples", type=int, default=50000, help="Maximum number of samples to save.")
+    parser.add_argument("--min-words", type=int, default=10, help="Minimum number of words in a review.")
+    parser.add_argument("--max-words", type=int, default=50, help="Maximum number of words in a review.")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility.")
+    parser.add_argument("--num-conditional-samples", type=int, default=100, help="Number of testing samples to save.")
+    parser.add_argument("--output-path", type=Path, default=PROJECT_PATH / "data", help="Save the output files here.")
     args = parser.parse_args()
 
     assert len(POSSIBLE_STAR_RATINGS) == 2, "only two star ratings are supported for swapping"
+
+    start_time = time.time()
 
     df = fetch_and_clean_dataset(args.data_subset)
     df_select, df_groupby = select_groups(df, args.min_words, args.max_words)
@@ -190,3 +193,6 @@ if __name__ == "__main__":
     df_conditional.to_csv(
         args.output_path / f"conditional_prompts_{args.data_subset}.csv.gz", index=False, compression="gzip"
     )
+
+    end_time = time.time()
+    print(f"Finished in {(end_time - start_time)/60:.2f} minutes")

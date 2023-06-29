@@ -6,13 +6,18 @@ This repo contains the code and notebooks for the Gretel GPT Sentiment Swap blog
 
 ## 😸 Use case overview
 
-The code in this folder demonstrates how to use the [Gretel GPT API](https://docs.gretel.ai/reference/synthetics/models/gretel-gpt) to fine tune and prompt a large language model to swap the sentiments of product reviews. Specifically, given a product review with a particular sentiment (positive or negative), our fine-tuned model will generate a new review with the opposite sentiment.
-
-This use case is relevant for a variety of practical applications. For example, a company may want to train a sentiment classification model on the comment section of their company blog, where negative comments are significantly underrepresented. In this case, similar steps to those we show here could be used to generate synthetic negative comments to balance the dataset.
+The code in this folder demonstrates how to use the [Gretel GPT API](https://docs.gretel.ai/reference/synthetics/models/gretel-gpt) to fine tune and prompt a large language model (LLM) to swap the sentiments of product reviews. Given a product review with a particular sentiment (positive or negative), our fine-tuned model will generate a new review with the opposite sentiment.
 
 ## 💾 Dataset for fine-tuning
 
-We fine tune Gretel GPT using subsets of the [Amazon Customer Reviews](https://huggingface.co/datasets/amazon_us_reviews). For us, the important columns of this dataset are `product_id`, `product_title`, `star_rating`, and `review_body`. We use the `star_rating` the as a proxy for sentiment, where 5 star is positive and 1 star is negative. By grouping the records by `product_id`, we build a dataset with both positive and negative reviews for a thousands of products. We then use this dataset to fine tune Gretel GPT to generate positive and negative reviews for each product. 
+We use Gretel GPT to fine tune an LLM using subsets of the [Amazon Customer Reviews](https://huggingface.co/datasets/amazon_us_reviews). For our task, the important columns of this dataset are 
+
+- `product_id`
+- `product_title`
+- `star_rating`
+- `review_body`
+
+We use `star_rating` as a proxy for sentiment, where 5 star is positive and 1 star is negative. We group the records by `product_id` to build a dataset with both positive and negative reviews for thousands of products. We then pass this dataset to Gretel GPT to fine tune an LLM to generate review pairs (with opposite sentiment) for each product. 
 
 ## 🤖 Example Gretel GPT generations
 
@@ -28,7 +33,7 @@ We fine tuned two Gretel GPT models on two different subsets of the Amazon Custo
 >
 > Product Name: Just Dance 4<br>
 > Number of Stars: 1<br>
-> Review: **This game is so old. It was made in 2012, and now that I bought it, they are making a new one that is way better. This one has a really low budget. I suggest not to buy it, get the newer one that is way better.**
+> Review: **`This game is so old. It was made in 2012, and now that I bought it, they are making a new one that is way better. This one has a really low budget. I suggest not to buy it, get the newer one that is way better.`**
 
 ---
 
@@ -38,7 +43,7 @@ We fine tuned two Gretel GPT models on two different subsets of the Amazon Custo
 >
 > Product Name: Red Nunchuck Wired Controller Compatible with Nintendo Wii<br>
 > Number of Stars: 5<br>
-> Review: **This is an excellent wired nunchuck. I purchased it to use with my old Wii and I haven't had any problems with it. Works just as it should.**
+> Review: **`This is an excellent wired nunchuck. I purchased it to use with my old Wii and I haven't had any problems with it. Works just as it should.`**
 
 ---
 
@@ -52,7 +57,7 @@ We fine tuned two Gretel GPT models on two different subsets of the Amazon Custo
 >
 > Product Name: Little Boys Paw Patrol Toddler Hat<br>
 > Number of Stars: 1<br>
-> Review:  **The hat I received had a big rip in the back and no tags inside to put the child's name. It is also a different hat than what is pictured in the ad.**
+> Review:  **`The hat I received had a big rip in the back and no tags inside to put the child's name. It is also a different hat than what is pictured in the ad.`**
 
 ---
 
@@ -62,7 +67,7 @@ We fine tuned two Gretel GPT models on two different subsets of the Amazon Custo
 >
 > Product Name: Disney Girls' 2 Piece Minnie Knit Pant Set<br>
 > Number of Stars: 5<br>
-> Review: **The product is as described, and as expected. It looks great on my daughter, and the material is of great quality. Very happy with the product.**
+> Review: **`The product is as described, and as expected. It looks great on my daughter, and the material is of great quality. Very happy with the product.`**
 
 ---
 
@@ -70,9 +75,9 @@ We fine tuned two Gretel GPT models on two different subsets of the Amazon Custo
 
 ### Installation
 
-To run this example, the requirements in `requirements.txt`, which includes the [Gretel Python SDK](https://github.com/gretelai/gretel-python-client).
+To run this example, the install the dependencies in `requirements.txt`, which include the [Gretel Python SDK](https://github.com/gretelai/gretel-python-client).
 
-Preferably within a virtual environment, you can install the requirements using:
+Preferably within a virtual environment, run the following command:
 
 ```bash
 python -m pip -r requirements.txt
@@ -84,20 +89,21 @@ Of course, you will also need to [install Jupyter](https://jupyter.org/install) 
 
 ### Create an account on the Gretel platform
 
-If you haven't already, you will need to create an account on the [Gretel platform](https://console.gretel.ai/login). The free developer tier comes with 60 credits (5 hours of compute) per month, which is more than enough to fine tune one model on the `Video_Games_v1_00` data subset!
+If you haven't already, create an account on the [Gretel platform](https://console.gretel.ai/login). The free developer tier comes with 60 credits (5 hours of compute) per month, which is more than enough to fine tune one model on the `Video_Games_v1_00` data subset!
 
 ### Build the fine-tuning dataset
 
 The [create_dataset.py](./create_dataset.py) script performs the following steps to create the fine-tuning dataset:
-- downloads the given subset (passed as a command-line argument) of the Amazon Customer Review dataset
-- performs minor cleaning of the relevant fields
-- selects reviews with 10 - 50 words
-- groups the records by `product_id`
-- selects products with both positive (5 stars) and negative (1 star) reviews. 
+- download the given subset (passed as a command-line argument) of the Amazon Customer Review dataset
+- perform minor cleaning of the relevant fields
+- select reviews with 10 - 50 words
+- group the records by `product_id`
+- select products with both positive (5 stars) and negative (1 star) reviews
+- select the first "most helpful" review for each product and add it to the dataset
 
-In addition, the script builds a test set of products with only positive or only negative reviews, which will be used to assess the model generations in the [gretel-gpt-sentiment-swap.ipynb](./gretel-gpt-sentiment-swap.ipynb) notebook. 
+In addition, the script builds a test set that consists of _conditional prompts_ for products with only positive or only negative reviews (i.e., products that are not in our training set), which will be used to assess the model generations in the [gretel-gpt-sentiment-swap.ipynb](./gretel-gpt-sentiment-swap.ipynb) notebook. 
 
-Run the following command to create the `Video_Games_v1_00` data subset for fine-tuning (note that the datasets with the default script parameters have already been created and are available in the `data` directory): 
+Run the following command to create the `Video_Games_v1_00` data subset (note that the datasets with the default script parameters have already been created and are available in the [data](./data) directory): 
 
 ```bash
 python create_dataset.py --data-subset Video_Games_v1_00
@@ -117,16 +123,17 @@ All the available command-line options can be viewed by running:
 python create_dataset.py -h
 ```
 
-### Fine tune Gretel GPT
+### Fine tune with Gretel GPT
 
-Fine tuning is carried out in the [fine_tune_with_gretel_gpt.py](./fine_tune_with_gretel_gpt.py) script, which configures a session with [Gretel Cloud](https://console.gretel.ai/) and submits a fine-tuning job using the conditional prompts that were created in the previous step.
+Fine tuning is carried out in the [fine_tune_with_gretel_gpt.py](./fine_tune_with_gretel_gpt.py) script, which configures a session with [Gretel Cloud](https://console.gretel.ai/) and submits the job using the conditional prompts that were created in the previous step.
 
+Fine tune the model on the `Video_Games_v1_00` data subset by running:
 
 ```bash
 python fine_tune_with_gretel_gpt.py --data-subset Video_Games_v1_00
 ```
 
-For `Video_Games_v1_00`, there are ~16,000 5-star/1-star review pairs. You can check the job status in the [Gretel Cloud console](https://console.gretel.ai/projects). The fine-tuning process should take a few hours. 
+The `Video_Games_v1_00` data subset contains ~16,000 review pairs. The fine-tuning process should take a few hours. You can check the job status in the [Gretel Cloud console](https://console.gretel.ai/projects). 
 
 ### Swap product review sentiments with Gretel GPT
 

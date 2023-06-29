@@ -55,7 +55,7 @@ def select_groups(
     select_mask = (df["review_num_words"] < max_words) & (df["review_num_words"] > min_words)
     print("Grouping records by product_id")
 
-    # keep groups with at least one example of star_rating in POSSIBLE_STAR_RATINGS
+    # Keep groups with at least one example of star_rating in POSSIBLE_STAR_RATINGS.
     df_groupby_product_id = (
         df[select_mask]
         .groupby("product_id")
@@ -99,7 +99,7 @@ def create_training_review_pairs(df_groupby: pd.core.groupby.DataFrameGroupBy, r
         reference_num_stars = POSSIBLE_STAR_RATINGS[select_idx]
         target_num_stars = POSSIBLE_STAR_RATINGS[1 - select_idx]
 
-        # select the most helpful review for each star rating
+        # Select the most helpful review for each star rating.
         reviews = {
             num_stars: df_group.query(f"star_rating == {num_stars}")
             .sort_values("helpful_votes", ascending=False)
@@ -137,7 +137,7 @@ def create_conditional_prompt_test_set(
     """
     print(f"Creating {num_samples} conditional prompts")
 
-    # for each star rating, we select reviews that were not in the training group
+    # For each star rating, we select reviews that were not in the training group.
     df["star_rating"].isin(POSSIBLE_STAR_RATINGS)
     not_in_group_mask = ~df["product_id"].isin(group_names)
 

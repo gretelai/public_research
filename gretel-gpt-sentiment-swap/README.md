@@ -1,4 +1,4 @@
-<img src="../assets/gretel_icon.jpg" height="65" width="65" align="left" style="margin-right: -5px"/>
+<img src="../assets/gretel_icon.jpg" height="85" width="85" align="left" style="margin-right: 0px"/>
 
 # Gretel GPT Sentiment Swap
 

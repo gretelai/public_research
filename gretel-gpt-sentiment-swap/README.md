@@ -16,7 +16,7 @@ We fine tune Gretel GPT using subsets of the [Amazon Customer Reviews](https://h
 
 ## 🤖 Example Gretel GPT generations
 
-We fine tuned two Gretel GPT models on two different subsets of the Amazon Customer Reviews dataset: `Apparel_v1_001` and  `Video_Games_v1_00`. Here are some example generations for each (bold text indicates the model generations):
+We fine tuned two Gretel GPT models on two different subsets of the Amazon Customer Reviews dataset: `Video_Games_v1_00` and  `Apparel_v1_001`. Here are some example generations for each (bold text indicates the model generations):
 
 ### Video_Games_v1_00
 
@@ -84,7 +84,7 @@ Of course, you will also need to [install Jupyter](https://jupyter.org/install) 
 
 ### Create an account on the Gretel platform
 
-If you haven't already, you will need to create an account on the [Gretel platform](https://console.gretel.ai/login). The free developer tier comes with 60 credits (5 hours of compute) per month, which is enough to fine tune using the `Video_Games_v1_00` data subset!
+If you haven't already, you will need to create an account on the [Gretel platform](https://console.gretel.ai/login). The free developer tier comes with 60 credits (5 hours of compute) per month, which is more than enough to fine tune one model on the `Video_Games_v1_00` data subset!
 
 ### Build the fine-tuning dataset
 
@@ -97,20 +97,19 @@ The [create_dataset.py](./create_dataset.py) script performs the following steps
 
 In addition, the script builds a test set of products with only positive or only negative reviews, which will be used to assess the model generations in the [gretel-gpt-sentiment-swap.ipynb](./gretel-gpt-sentiment-swap.ipynb) notebook. 
 
-The default command-line arguments will download the `Video_Games_v1_00` subset of the Amazon Customer Review dataset.
+Run the following command to create the `Video_Games_v1_00` data subset for fine-tuning (note that the datasets with the default script parameters have already been created and are available in the `data` directory): 
 
 ```bash
-python create_dataset.py
+python create_dataset.py --data-subset Video_Games_v1_00
 ```
-> Note: The video games dataset has roughly 1.8 million rows (~1.2GB). Use this dataset if you are fine tuning with the free developer tier.
+> Note: The full video game dataset has roughly 1.8 million rows (~1.2GB).
 
-If you want to download the `Apparel_v1_001` data subset, you can run:
+If you want to use the `Apparel_v1_00` data subset, you can run:
 
 ```bash
-python create_dataset.py --data-subset Apparel_v1_001
+python create_dataset.py --data-subset Apparel_v1_00
 ```
-> Note: The apparel dataset is fairly large, with roughly 6 million rows (~2.1 GB). 
-
+> Note: The full apparel dataset is fairly large, with roughly 6 million rows (~2.1 GB). 
 
 All the available command-line options can be viewed by running:
 
@@ -120,16 +119,15 @@ python create_dataset.py -h
 
 ### Fine tune Gretel GPT
 
-Fine tuning is carried out in the [fine_tune_with_gretel_gpt.py](./fine_tune_with_gretel_gpt.py) script, which configures a session with [Gretel Cloud](https://console.gretel.ai/) and submits a fine tuning job using the conditional prompts that were created in the previous step.
+Fine tuning is carried out in the [fine_tune_with_gretel_gpt.py](./fine_tune_with_gretel_gpt.py) script, which configures a session with [Gretel Cloud](https://console.gretel.ai/) and submits a fine-tuning job using the conditional prompts that were created in the previous step.
 
-The default command-line arguments will fine tune Gretel GPT using the `Video_Games_v1_00` data subset.
 
 ```bash
-python fine_tune_with_gretel_gpt.py
+python fine_tune_with_gretel_gpt.py --data-subset Video_Games_v1_00
 ```
 
-For `Video_Games_v1_00`, the fine tuning process should take a few hours. You can check the training process in the [Gretel Cloud console](https://console.gretel.ai/projects).
+For `Video_Games_v1_00`, there are ~16,000 5-star/1-star review pairs. You can check the job status in the [Gretel Cloud console](https://console.gretel.ai/projects). The fine-tuning process should take a few hours. 
 
 ### Swap product review sentiments with Gretel GPT
 
-We are finally ready to generate some product reviews! Follow along in the  [gretel-gpt-sentiment-swap.ipynb](./gretel-gpt-sentiment-swap.ipynb) notebook to see how we run our fine-tuned model in the Gretel Cloud to swap the sentiment of product reviews.
+We are finally ready to generate some product reviews! Follow along with the [gretel-gpt-sentiment-swap.ipynb](./gretel-gpt-sentiment-swap.ipynb) notebook to see how we prompt our fine-tuned model in the Gretel Cloud to swap the sentiment of product reviews.

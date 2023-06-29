@@ -164,7 +164,7 @@ def create_conditional_prompt_test_set(
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--data-subset", type=str, default="Video_Games_v1_00", help="Subset of Amazon dataset to use.")
-    parser.add_argument("--max-training-samples", type=int, default=50000, help="Maximum number of samples to save.")
+    parser.add_argument("--max-training-samples", type=int, default=25000, help="Maximum number of samples to save.")
     parser.add_argument("--min-words", type=int, default=10, help="Minimum number of words in a review.")
     parser.add_argument("--max-words", type=int, default=50, help="Maximum number of words in a review.")
     parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility.")

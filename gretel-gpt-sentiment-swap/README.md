@@ -47,7 +47,7 @@ We fine tuned two Gretel GPT models on two different subsets of the Amazon Custo
 
 ---
 
-### Apparel_v1_001
+### Apparel_v1_00
 
 ---
 

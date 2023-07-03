@@ -8,6 +8,7 @@ import pandas as pd
 PROJECT_NAME = "gretel-gpt-sentiment-swap"
 
 parser = ArgumentParser()
+parser.add_argument("--project-name", type=str, default=PROJECT_NAME)
 parser.add_argument("--data-subset", type=str, default="Video_Games_v1_00")
 args = parser.parse_args()
 
@@ -20,7 +21,7 @@ gretel.configure_session(
     clear=True,
 )
 
-project = gretel.projects.create_or_get_unique_project(name=PROJECT_NAME)
+project = gretel.projects.get_project(name=args.project_name, create=True)
 
 config = {
     "schema_version": 1,
@@ -34,7 +35,7 @@ config = {
                 "weight_decay": 0.01,
                 "warmup_steps": 100,
                 "lr_scheduler": "linear",
-                "learning_rate": 0.0002,
+                "learning_rate": 0.0005,
                 "validation": None,
                 "generate": {"num_records": 100, "maximum_text_length": 500},
             }

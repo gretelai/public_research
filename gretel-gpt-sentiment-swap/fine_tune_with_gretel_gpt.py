@@ -5,23 +5,23 @@ from argparse import ArgumentParser
 import gretel_client as gretel
 import pandas as pd
 
-PROJECT_NAME = "gretel-gpt-sentiment-swap"
 
 parser = ArgumentParser()
-parser.add_argument("--project-name", type=str, default=PROJECT_NAME)
+parser.add_argument("--project-name", type=str, default="gretel-gpt-sentiment-swap")
 parser.add_argument("--data-subset", type=str, default="Video_Games_v1_00")
 args = parser.parse_args()
 
-api_key = os.getenv("GRETEL_API_DEV_KEY") or getpass.getpass("Enter your Gretel API key: ")
+api_key = os.getenv("GRETEL_API_KEY") or getpass.getpass("Enter your Gretel API key: ")
 
 gretel.configure_session(
     api_key=api_key,
-    endpoint="https://api-dev.gretel.cloud",
+    endpoint="https://api.gretel.cloud",
     validate=True,
     clear=True,
 )
 
-project = gretel.projects.get_project(name=args.project_name, create=True)
+print(f"Creating or fetching Gretel project with name {args.project_name}")
+project = gretel.projects.get_project(name=args.project_name, display_name=args.project_name, create=True)
 
 config = {
     "schema_version": 1,
@@ -42,7 +42,11 @@ config = {
         }
     ],
 }
+
+print("Creating model object")
 model = project.create_model_obj(model_config=config)
-model.data_source = pd.read_csv(f"data/training_product_review_pairs_{args.data_subset}.csv.gz")
-model.name = f"{PROJECT_NAME}_{args.data_subset}"
+model.data_source = pd.read_csv(f"data/training_review_pairs_{args.data_subset}.csv.gz")
+model.name = f"{args.project_name}_{args.data_subset}"
+
+print(f"Submitting fine-tuning job to Gretel Cloud with data subset {args.data_subset}")
 model.submit_cloud()

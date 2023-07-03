@@ -297,7 +297,7 @@ if __name__ == "__main__":
 
     print(f"Writing file with {len(df_training)} samples for fine tuning")
     df_training = df_training.sample(min(len(df_training), args.max_training_samples), replace=False, random_state=rng)
-    df_training.to_csv(args.output_path / f"training_product_review_pairs_{args.data_subset}.csv.gz", index=False)
+    df_training.to_csv(args.output_path / f"training_review_pairs_{args.data_subset}.csv.gz", index=False)
 
     group_names = list(df_groupby.groups.keys())
     df_conditional = create_conditional_prompt_test_set(df_select, group_names, rng, args.num_conditional_samples)

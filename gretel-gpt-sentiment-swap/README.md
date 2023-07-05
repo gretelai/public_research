@@ -19,9 +19,17 @@ We use Gretel GPT to fine tune an LLM using subsets of the [Amazon Customer Revi
 
 We use `star_rating` as a proxy for sentiment, where 5 star is positive and 1 star is negative. We group the records by `product_id` to build a dataset with both positive and negative reviews for thousands of products. We then pass this dataset to Gretel GPT to fine tune an LLM to generate review pairs (with opposite sentiment) for each product. 
 
+
+## 📝 Code descriptions
+
+- [create_dataset.py](./create_dataset.py): Uses the Amazon Customer Reviews dataset to build the fine-tuning and conditional prompt datasets.
+- [fine_tune_with_gretel_gpt.py](./fine_tune_with_gretel_gpt.py): Fine tunes a Gretel GPT model on the fine-tuning dataset. You can view model training progress in the [Gretel Cloud console](https://console.gretel.ai/projects).
+- [generate_sentiment_swapped_reviews.py](./generate_sentiment_swapped_reviews.py): Uses the fine-tuned Gretel GPT model to generate sentiment swapped reviews for each product in the conditional prompt dataset.
+- [gretel_gpt_sentiment_swap.ipynb](./gretel_gpt_sentiment_swap.ipynb): Optional Jupyter notebook that can be used in place of `generate_sentiment_swapped_reviews.py` to generate sentiment swapped reviews with the fine-tuned model.
+
 ## 🤖 Example Gretel GPT generations
 
-We fine tuned two Gretel GPT models on two different subsets of the Amazon Customer Reviews dataset: `Video_Games_v1_00` and  `Apparel_v1_001`. Here are some example generations for each (bold text indicates the model generations):
+We fine tuned two Gretel GPT models on two different subsets of the Amazon Customer Reviews dataset: `Video_Games_v1_00` and  `Apparel_v1_00`. Here are some example generations for each (bold text indicates the model generations):
 
 ### Video_Games_v1_00
 
@@ -75,16 +83,22 @@ We fine tuned two Gretel GPT models on two different subsets of the Amazon Custo
 
 ### Installation
 
-To run this example, the install the dependencies in `requirements.txt`, which include the [Gretel Python SDK](https://github.com/gretelai/gretel-python-client).
+To run this example, clone this repository and the install the dependencies in `requirements.txt`, which include the [Gretel Python SDK](https://github.com/gretelai/gretel-python-client).
 
-Preferably within a virtual environment, run the following command:
+Clone this repo and cd into the `gretel-gpt-sentiment-swap` directory:
+```bash
+git clone https://github.com/gretelai/public_research.git
+cd public_research/gretel-gpt-sentiment-swap
+```
+
+Preferably within a virtual Python environment, install the dependencies:
 
 ```bash
 python -m pip -r requirements.txt
 ```
 > Note: The results presented here were generated using Python 3.10.12.
 
-Of course, you will also need to [install Jupyter](https://jupyter.org/install) to run the notebook.
+You will also need to [install Jupyter](https://jupyter.org/install) if you want to run the notebook.
 
 
 ### Create an account on the Gretel platform
@@ -137,4 +151,12 @@ The `Video_Games_v1_00` data subset contains ~16,000 review pairs. The fine-tuni
 
 ### Swap product review sentiments with Gretel GPT
 
-We are finally ready to generate some product reviews! Follow along with the [gretel-gpt-sentiment-swap.ipynb](./gretel-gpt-sentiment-swap.ipynb) notebook to see how we prompt our fine-tuned model in the Gretel Cloud to swap the sentiment of product reviews.
+We are finally ready to generate some product reviews! Follow along with the [gretel-gpt-sentiment-swap.ipynb](./gretel-gpt-sentiment-swap.ipynb) notebook to see how we prompt our fine-tuned model in the Gretel Cloud to swap the sentiment of product reviews. 
+
+Alternatively, you can use the [generate_sentiment_swapped_reviews.py](./generate_sentiment_swapped_reviews.py) script to generate the reviews from the command line, which will write the review pairs in a text file in the `model-generations` directory for easy viewing.
+
+Generate sentiment-swapped reviews for the `Video_Games_v1_00` data subset by running:
+
+```bash
+python generate_sentiment_swapped_reviews.py --data-subset Video_Games_v1_00
+```

@@ -7,8 +7,8 @@ import pandas as pd
 
 
 parser = ArgumentParser()
-parser.add_argument("--project-name", type=str, default="gretel-gpt-sentiment-swap")
-parser.add_argument("--data-subset", type=str, default="Video_Games_v1_00")
+parser.add_argument("--project-name", type=str, default="gretel-gpt-sentiment-swap", help="Name of Gretel project.")
+parser.add_argument("--data-subset", type=str, default="Video_Games_v1_00", help="Subset of Amazon dataset.")
 args = parser.parse_args()
 
 api_key = os.getenv("GRETEL_API_KEY") or getpass.getpass("Enter your Gretel API key: ")

@@ -103,7 +103,7 @@ You will also need to [install Jupyter](https://jupyter.org/install) if you want
 
 ### Create an account on the Gretel platform
 
-If you haven't already, create an account on the [Gretel platform](https://console.gretel.ai/login). The free developer tier comes with 60 credits (5 hours of compute) per month, which is more than enough to fine tune one model on the `Video_Games_v1_00` data subset!
+If you haven't already, create an account on the [Gretel platform](https://console.gretel.ai/login). The free developer tier comes with 60 credits (5 hours of compute) per month, which is enough to fine tune one model on the `Video_Games_v1_00` data subset!
 
 ### Build the fine-tuning dataset
 

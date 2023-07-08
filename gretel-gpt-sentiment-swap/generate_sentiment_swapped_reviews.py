@@ -13,8 +13,7 @@ parser.add_argument(
     "--temperature",
     type=float,
     default=1.2,
-    help="The value used to module the next token probabilities. "
-    "Higher temperatures lead to more randomness in the output.",
+    help="Hyperparameter that regulates the randomness of the LLM outputs. Higher values lead to more randomness.",
 )
 args = parser.parse_args()
 

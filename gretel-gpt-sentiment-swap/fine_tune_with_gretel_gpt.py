@@ -30,7 +30,7 @@ config = {
             "gpt_x": {
                 "data_source": "__",
                 "pretrained_model": "gretelai/mpt-7b",
-                "batch_size": 4,
+                "batch_size": 16,
                 "epochs": 4,
                 "weight_decay": 0.01,
                 "warmup_steps": 100,

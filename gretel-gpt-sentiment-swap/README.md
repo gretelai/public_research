@@ -1,6 +1,6 @@
 <img src="../assets/gretel_icon.jpg" height="85" width="85" align="left" style="margin-right: 0px"/>
 
-# Gretel GPT Sentiment Swap
+# Gretel GPT Sentiment Swap 🎭
 
 This repo contains the code and notebooks for the Gretel GPT Sentiment Swap blog post.
 

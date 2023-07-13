@@ -1,10 +1,10 @@
 <img src="../assets/gretel_icon.jpg" height="85" width="85" align="left" style="margin-right: 0px"/>
 
-# Gretel GPT Sentiment Swap 🎭
+# Gretel GPT Sentiment Swap
 
 This repo contains the code and notebooks for the Gretel GPT Sentiment Swap blog post.
 
-## 😸 Use case overview
+## 🎭 Use case overview
 
 The code in this folder demonstrates how to use the [Gretel GPT API](https://docs.gretel.ai/reference/synthetics/models/gretel-gpt) to fine tune and prompt a large language model (LLM) to swap the sentiments of product reviews. Given a product review with a particular sentiment (positive or negative), our fine-tuned model will generate a new review with the opposite sentiment.
 

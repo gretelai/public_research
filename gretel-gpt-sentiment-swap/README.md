@@ -10,7 +10,7 @@ The code in this folder demonstrates how to use the [Gretel GPT API](https://doc
 
 ## 💾 Dataset for fine-tuning
 
-We use Gretel GPT to fine tune an LLM using subsets of the [Amazon Customer Reviews](https://huggingface.co/datasets/amazon_us_reviews). For our task, the important columns of this dataset are 
+We use Gretel GPT to fine tune an LLM using subsets of the [Amazon Customer Reviews](https://huggingface.co/datasets/amazon_us_reviews) dataset. For our task, the important columns of this dataset are 
 
 - `product_id`
 - `product_title`

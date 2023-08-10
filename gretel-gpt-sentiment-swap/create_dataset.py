@@ -274,34 +274,50 @@ if __name__ == "__main__":
     parser.add_argument("--num-conditional-samples", type=int, default=100, help="Number of test examples to save.")
     parser.add_argument("--output-path", type=Path, default=PROJECT_PATH / "data", help="Save the output files here.")
     parser.add_argument(
-        "--pair-with-cos-sim",
-        action="store_true",
-        help="Use cosine similarity as the pair selection metric. "
-        "Note: You'll need to install pytorch and sentence-transformers to use this option.",
+        "--pair-metric",
+        default="helpful_votes",
+        choices=["helpful_votes", "cos_sim"],
+        help="Metric to use for selecting review pairs."
+        "Note: For cos_sim = cosine similarity, you'll need to install pytorch and sentence-transformers.",
     )
     args = parser.parse_args()
 
     start_time = time.time()
 
+    ###############################################################################
+    # Fetch and pre-process dataset
+    ###############################################################################
     df = fetch_and_clean_dataset(args.data_subset)
     df_select, df_groupby = select_and_group_reviews(df, args.min_words, args.max_words)
-    number_of_reviews = min(df_groupby.ngroups, args.max_training_samples)
 
+    ###############################################################################
+    # Select review pairs based on the given selection metric
+    ###############################################################################
     rng = np.random.RandomState(args.seed)
-    if args.pair_with_cos_sim:
+    number_of_reviews = min(df_groupby.ngroups, args.max_training_samples)
+    if args.pair_metric == "cos_sim":
         print("Review pair metric: cosine similarity")
         df_training = create_review_pairs_cosine_similarity(df_select, df_groupby, number_of_reviews, rng)
-    else:
+    elif args.pair_metric == "helpful_votes":
         print("Review pair metric: helpful votes")
         df_training = create_review_pairs_helpful_votes(df_groupby, number_of_reviews, rng)
+    else:
+        raise ValueError(f"Unknown pair metric: {args.pair_metric}")
 
+    ###############################################################################
+    # Save the training dataset of review pairs
+    ###############################################################################
+    file_label = f"{args.data_subset}_{args.pair_metric}"
     print(f"Writing file with {len(df_training)} samples for fine tuning")
     df_training = df_training.sample(min(len(df_training), args.max_training_samples), replace=False, random_state=rng)
-    df_training.to_csv(args.output_path / f"training_review_pairs_{args.data_subset}.csv.gz", index=False)
+    df_training.to_csv(args.output_path / f"training_review_pairs-{file_label}.csv.gz", index=False)
 
+    ###############################################################################
+    # Create test set of conditional prompts
+    ###############################################################################
     group_names = list(df_groupby.groups.keys())
     df_conditional = create_conditional_prompt_test_set(df_select, group_names, rng, args.num_conditional_samples)
-    df_conditional.to_csv(args.output_path / f"conditional_prompts_{args.data_subset}.csv.gz", index=False)
+    df_conditional.to_csv(args.output_path / f"conditional_prompts-{args.data_subset}.csv.gz", index=False)
 
     end_time = time.time()
     print(f"Finished in {(end_time - start_time)/60:.2f} minutes")

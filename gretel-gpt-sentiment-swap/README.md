@@ -91,7 +91,20 @@ git clone https://github.com/gretelai/public_research.git
 cd public_research/gretel-gpt-sentiment-swap
 ```
 
-Preferably within a virtual Python environment, install the dependencies:
+If you only want to clone the contents of the gretel-gpt-sentiment-swap folder, you can use GitHub’s sparse-checkout functionality:
+
+```bash
+git clone --no-checkout https://github.com/gretelai/public_research.git
+cd public_research
+
+git sparse-checkout init --cone
+git sparse-checkout set gretel-gpt-sentiment-swap
+git checkout main
+
+cd gretel-gpt-sentiment-swap
+```
+
+Next, install the dependencies (preferably within a virtual Python environment):
 
 ```bash
 python -m pip -r requirements.txt
@@ -105,6 +118,8 @@ You will also need to [install Jupyter](https://jupyter.org/install) if you want
 
 If you haven't already, create an account on the [Gretel platform](https://console.gretel.ai/login). The free developer tier comes with 60 credits (5 hours of compute) per month, which is enough to fine tune one model on the `Video_Games_v1_00` data subset!
 
+To run the code in this repo, you'll need a Gretel API key, which can be found in the [account settings page](https://console.gretel.ai/users/me/key) of your Gretel console. You will be prompted to enter your API key when you run the code. Alternatively, you can set an environment variable called `GRETEL_API_KEY` to your API key.
+
 ### Build the fine-tuning dataset
 
 The [create_dataset.py](./create_dataset.py) script performs the following steps to create the fine-tuning dataset:
@@ -115,7 +130,7 @@ The [create_dataset.py](./create_dataset.py) script performs the following steps
 - select products with both positive (5 stars) and negative (1 star) reviews
 - select the first "most helpful" review for each product and add it to the dataset
 
-In addition, the script builds a test set that consists of _conditional prompts_ for products with only positive or only negative reviews (i.e., products that are not in our training set), which will be used to assess the model generations in the [gretel-gpt-sentiment-swap.ipynb](./gretel-gpt-sentiment-swap.ipynb) notebook. 
+In addition, the script builds a test set that consists of _conditional prompts_ for products with only positive or only negative reviews (i.e., products that are not in our training set), which will be used to assess the model generations in the [generate_sentiment_swapped_reviews.py](./generate_sentiment_swapped_reviews.py). 
 
 Run the following command to create the `Video_Games_v1_00` data subset (note that the datasets with the default script parameters have already been created and are available in the [data](./data) directory): 
 

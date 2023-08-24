@@ -107,7 +107,7 @@ cd gretel-gpt-sentiment-swap
 Next, install the dependencies (preferably within a virtual Python environment):
 
 ```bash
-python -m pip -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 > Note: The results presented here were generated using Python 3.10.12.
 

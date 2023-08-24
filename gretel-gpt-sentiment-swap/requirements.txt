@@ -1,5 +1,5 @@
 datasets==2.13.0
-gretel_client==0.16.6
+gretel_client==0.16.13
 numpy==1.24.3
 pandas==1.5.3
 tqdm==4.65.0

@@ -49,10 +49,14 @@ config = {
         }
     ],
 }
+
 print("Creating model object")
 file_label = f"{args.data_subset}_{args.pair_metric}"
 model = project.create_model_obj(model_config=config)
 model.data_source = pd.read_csv(f"data/training_review_pairs-{file_label}.csv.gz")
 model.name = f"{args.project_name}-{file_label}"
+
 print(f"Submitting fine-tuning job to Gretel Cloud with data subset {file_label}")
 model.submit_cloud()
+
+print("🚀 Job submitted! You can monitor its progress in the Gretel Console: https://console.gretel.ai/projects")

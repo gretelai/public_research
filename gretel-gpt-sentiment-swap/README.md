@@ -2,7 +2,7 @@
 
 # Gretel GPT Sentiment Swap
 
-This repo contains the code and notebooks for the Gretel GPT Sentiment Swap blog post.
+This repo contains the code and notebooks for the [Gretel GPT Sentiment Swap blog post](https://gretel.ai/blog/gretel-gpt-sentiment-swap).
 
 ## 🎭 Use case overview
 

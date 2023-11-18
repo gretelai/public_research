@@ -40,6 +40,7 @@ def get_embeddings(text_column: pd.Series, model) -> List[torch.Tensor]:
     
     return embeddings
 
+# KFB: these type annotations are almost certainly not correct
 def calc_mean_var(embeddings: List[np.array]) -> Tuple[Any, Any]:
     '''
     Calculate the mean and covariance of the data. Will also work on single dimensional data.
@@ -112,6 +113,7 @@ def calc_FBD(real_mean: Any,
     
     return (diff.dot(diff) + np.trace(real_var) + np.trace(synth_var) - 2*np.trace(covmean))
 
+# KFB: these type annotations are almost certainly not correct
 def create_scores(real_embeddings: List[torch.Tensor], 
                   synth_embeddings: List[torch.Tensor]) -> Tuple[List[float], List[float]]:
     '''
@@ -134,11 +136,11 @@ def create_scores(real_embeddings: List[torch.Tensor],
     
     real_scores = []
     for real_embedding in real_embeddings:
-        real_scores.append(util.pytorch_cos_sim(real_avg_embedding, real_embedding))
+        real_scores.append(util.pytorch_cos_sim(real_avg_embedding, real_embedding).numpy()[0])
     
     synth_scores = []
     for synth_embedding in synth_embeddings:
-        synth_scores.append(util.pytorch_cos_sim(real_avg_embedding, synth_embedding))
+        synth_scores.append(util.pytorch_cos_sim(real_avg_embedding, synth_embedding).numpy()[0])
         
     return real_scores, synth_scores
 
@@ -162,7 +164,7 @@ def calc_FCSD(real_score_mean: float,
     return ((real_score_mean - synth_score_mean)**2 + 
             real_score_var + 
             synth_score_var - 
-            2 * math.sqrt(real_score_var * synth_score_var))
+            2 * math.sqrt(real_score_var * synth_score_var))[0]
 
 def metrics_run(real_text: pd.Series, 
                 synth_text: pd.Series, 
@@ -202,8 +204,7 @@ def metrics_run(real_text: pd.Series,
     values_list = [real_embeddings, synth_embeddings, real_scores, synth_scores]
     dict_names = ['real', 'synth', 'real_scores', 'synth_scores']
     for vals, name in zip(values_list, dict_names):
-        if 'scores' not in name:
-            vals = [el.numpy() for el in vals]
+        vals = [x.numpy() if type(x)==torch.Tensor else x for x in vals]
         mean, var = calc_mean_var(vals)
         stats_dict[name] = {}
         stats_dict[name]['mean'] = mean
